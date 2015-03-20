@@ -264,7 +264,7 @@ class TestSplicingData:
             groupby_copy = groupby_params
 
         grouped = data.groupby(groupby_copy)
-        data = pd.concat([df.dropna(thresh=10, axis=1)
+        data = pd.concat([df.dropna(thresh=30, axis=1)
                          for name, df in grouped])
         true_assignments = data.groupby(groupby_copy).apply(
             splicing.modality_estimator.fit_transform)
