@@ -85,7 +85,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=10):
+                             data=None, groupby=None, min_samples=30):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -132,7 +132,7 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_counts(self, sample_ids=None, feature_ids=None, data=None,
-                        groupby=None, min_samples=10):
+                        groupby=None, min_samples=30):
         """Count the number of each modalities of these samples and features
 
         Parameters
@@ -162,7 +162,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_reduced(self, sample_ids=None, feature_ids=None,
                                 data=None, ax=None, title=None,
-                                min_samples=10):
+                                min_samples=30):
         """Plot events modality assignments in NMF space
 
         This will calculate modalities on all samples provided, without
@@ -201,7 +201,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_bars(self, sample_ids=None, feature_ids=None,
                              data=None, groupby=None, phenotype_to_color=None,
-                             percentages=False, ax=None, min_samples=10):
+                             percentages=False, ax=None, min_samples=30):
         """Make grouped barplots of the number of modalities per group
 
         Parameters
@@ -231,7 +231,7 @@ class SplicingData(BaseData):
 
     def plot_modalities_lavalamps(self, sample_ids=None, feature_ids=None,
                                   data=None, groupby=None,
-                                  phenotype_to_color=None, min_samples=10):
+                                  phenotype_to_color=None, min_samples=30):
         """Plot "lavalamp" scatterplot of each event
 
         Parameters
@@ -286,7 +286,7 @@ class SplicingData(BaseData):
 
     def plot_event_modality_estimation(self, event_id, sample_ids=None,
                                        data=None,
-                                       groupby=None, min_samples=10):
+                                       groupby=None, min_samples=30):
         """Plots the mathematical reasoning for an event's modality assignment
 
         Parameters
