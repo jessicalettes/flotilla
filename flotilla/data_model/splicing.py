@@ -85,7 +85,8 @@ class SplicingData(BaseData):
 
     @memoize
     def modality_assignments(self, sample_ids=None, feature_ids=None,
-                             data=None, groupby=None, min_samples=30):
+                             data=None, groupby=None, min_samples=30,
+                             bins=(0, 0.3, 0.7, 1.0), ):
         """Assigned modalities for these samples and features.
 
         Parameters
@@ -98,7 +99,9 @@ class SplicingData(BaseData):
             If provided, use this dataframe instead of the sample_ids and
             feature_ids provided
         min_samples : int, optional
-            Minimum number of samples to use per grouped celltype. Default 10
+            Minimum number of samples to use per grouped celltype. Default 30
+        bins : iterable
+            Bins between 0 and 1 which will be used as a prefilter
 
         Returns
         -------
@@ -126,6 +129,8 @@ class SplicingData(BaseData):
         #                     'not {}'.format(type(min_samples)))
         data = pd.concat([df.dropna(thresh=min_samples, axis=1)
                           for name, df in grouped])
+
+
         assignments = data.groupby(groupby).apply(
             self.modality_estimator.fit_transform)
         return assignments
@@ -156,6 +161,33 @@ class SplicingData(BaseData):
                                                 groupby, min_samples)
         counts = assignments.apply(lambda x: x.groupby(x).size(), axis=1)
         return counts
+
+    def _deterministic_modalities(self, data, bins=(0, 0.3, 0.7, 1)):
+        """Remove splicing events entirely contained in one bin
+
+        Splicing events where all samples are contained in one bin should be
+        removed before performing bayesian estimates, because these can only
+        be in one modality, and are thus deterministic
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            A (samples, events) dataframe of psi scores
+        bins : iterable, optional
+            A list of bins to
+
+        Returns
+        -------
+        modalities :
+
+        """
+        binned = super(SplicingData, self).binify(data, bins)
+        binned1 = binned[binned == 1].dropna(how='all', axis=1)
+        modalities = binned1.apply(lambda x: x.argmax())
+        replacer = dict(zip(binned.index, ('excluded', 'middle', 'included')))
+        modalities = modalities.replace(replacer)
+        return modalities
+
 
     def binify(self, data):
         return super(SplicingData, self).binify(data, self.bins)
